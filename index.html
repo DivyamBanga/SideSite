@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Div Banga</title>
+    <meta name="description" content="Divyam Banga. Engineering student at Waterloo. Projects, hackathons, and things I've built.">
+    <meta property="og:title" content="Div Banga">
+    <meta property="og:description" content="Engineering student at Waterloo. Projects, hackathons, and things I've built.">
+    <meta property="og:image" content="assets/Thumbnail.webp">
+    <link rel="icon" href="assets/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="paint-canvas"></canvas>
+
+    <nav id="nav">
+        <a class="nav-logo" data-section="home">Div</a>
+        <div class="nav-links">
+            <a data-section="projects">Projects</a>
+            <a data-section="about">About</a>
+            <a href="assets/DivResume.pdf" target="_blank" rel="noopener">Resume <span class="ext-arrow">&#8599;</span></a>
+            <a data-section="contact">Contact</a>
+        </div>
+        <button id="theme-toggle" aria-label="Toggle theme">
+            <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+            <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+        </button>
+    </nav>
+
+    <main id="main">
+        <!-- ============ HERO ============ -->
+        <section id="home" class="section active">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1 class="hero-name anim-up" style="--d:0">
+                        <span class="highlight">Div</span>yam Banga
+                    </h1>
+                    <div class="hero-typing anim-up" style="--d:1">
+                        <span class="typing-label">I am a&nbsp;</span>
+                        <span id="typing-text"></span>
+                        <span class="typing-cursor">|</span>
+                    </div>
+                    <p class="hero-tagline anim-up" style="--d:2">I like building things that work and breaking things that don't.</p>
+                    <div class="hero-socials anim-up" style="--d:3">
+                        <a href="https://www.linkedin.com/in/divyam-banga-363990204/" target="_blank" rel="noopener" class="social-link">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                            LinkedIn
+                        </a>
+                        <a href="https://github.com/DivyamBanga" target="_blank" rel="noopener" class="social-link">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                            GitHub
+                        </a>
+                        <a href="mailto:divyambanga@gmail.com" class="social-link">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                            Email
+                        </a>
+                    </div>
+                    <p class="hero-hint anim-up" style="--d:4" id="paint-hint">move your cursor to paint</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ PROJECTS ============ -->
+        <section id="projects" class="section">
+            <div class="section-inner">
+                <h2 class="section-heading">Projects</h2>
+
+                <div class="featured-grid">
+                    <div class="project-card featured" data-tilt>
+                        <div class="project-badge">&#9733; HackCanada Finalist</div>
+                        <div class="project-thumb"><img src="assets/logo.png" alt="Lucid"></div>
+                        <h3 class="project-name">Lucid</h3>
+                        <p class="project-desc">Reads heart rate, blink rate &amp; breathing via phone camera to detect when you've stopped learning. Adapts study sessions in real time.</p>
+                        <div class="project-tags">
+                            <span>React</span><span>Node.js</span><span>WebSocket</span><span>Android</span><span>Ollama</span>
+                        </div>
+                        <a href="https://github.com/DivyamBanga/Lucid" target="_blank" rel="noopener" class="project-link" aria-label="View Lucid on GitHub">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                        </a>
+                    </div>
+
+                    <div class="project-card featured" data-tilt>
+                        <div class="project-badge">&#9733; CxC Hackathon Winner</div>
+                        <div class="project-thumb"><img src="assets/Thumbnail.webp" alt="Cortex"></div>
+                        <h3 class="project-name">Cortex</h3>
+                        <p class="project-desc">Turns ChatGPT &amp; Claude exports into a 3D semantic map you can fly through. Search your entire AI history via MCP.</p>
+                        <div class="project-tags">
+                            <span>Three.js</span><span>FastAPI</span><span>Ollama</span><span>UMAP</span><span>MCP</span>
+                        </div>
+                        <a href="https://github.com/Vibhor7-7/Cortex-CxC" target="_blank" rel="noopener" class="project-link" aria-label="View Cortex on GitHub">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                        </a>
+                    </div>
+
+                    <div class="project-card featured" data-tilt>
+                        <div class="project-badge">&#9733; NASA Space Apps Winner</div>
+                        <div class="project-thumb"><img src="assets/s5.png" alt="myFarm"></div>
+                        <h3 class="project-name">myFarm</h3>
+                        <p class="project-desc">Helps farmers in low-income areas grow more crops using NASA satellite data. Includes a rover, data maps &amp; chatbot.</p>
+                        <div class="project-tags">
+                            <span>Python</span><span>Flask</span><span>NASA Data</span><span>Plotly</span><span>SQLite</span>
+                        </div>
+                        <a href="https://github.com/Doomsy1/NASA" target="_blank" rel="noopener" class="project-link" aria-label="View myFarm on GitHub">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="secondary-grid">
+                    <div class="project-card secondary" data-tilt>
+                        <h3 class="project-name">Chess Engine</h3>
+                        <p class="project-desc">Full chess AI with minimax + alpha-beta pruning in a 5-second window.</p>
+                        <div class="project-tags"><span>Java</span><span>Minimax</span></div>
+                        <a href="https://github.com/DivyamBanga/Chess-Engine" target="_blank" rel="noopener" class="project-link" aria-label="View Chess Engine on GitHub">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                        </a>
+                    </div>
+                    <div class="project-card secondary" data-tilt>
+                        <h3 class="project-name">DarkStar</h3>
+                        <p class="project-desc">Real-time multiplayer browser game. Absorb particles, grow, compete.</p>
+                        <div class="project-tags"><span>Node.js</span><span>Socket.IO</span><span>Canvas</span></div>
+                        <a href="https://github.com/DivyamBanga/DarkStar" target="_blank" rel="noopener" class="project-link" aria-label="View DarkStar on GitHub">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                        </a>
+                    </div>
+                    <div class="project-card secondary" data-tilt>
+                        <h3 class="project-name">Scouting App</h3>
+                        <p class="project-desc">Real-time FRC match data collection used by drive team at competitions.</p>
+                        <div class="project-tags"><span>Flutter</span><span>Firebase</span><span>Dart</span></div>
+                        <a href="https://github.com/DivyamBanga/ScoutApp2024" target="_blank" rel="noopener" class="project-link" aria-label="View Scouting App on GitHub">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                        </a>
+                    </div>
+                    <div class="project-card secondary" data-tilt>
+                        <h3 class="project-name">Paint Clone</h3>
+                        <p class="project-desc">Clash Royale-themed drawing app with custom tools, stamps &amp; file ops.</p>
+                        <div class="project-tags"><span>Python</span><span>Pygame</span></div>
+                        <a href="https://github.com/DivyamBanga/paint" target="_blank" rel="noopener" class="project-link" aria-label="View Paint Clone on GitHub">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                        </a>
+                    </div>
+                    <div class="project-card secondary" data-tilt>
+                        <h3 class="project-name">DivDodge</h3>
+                        <p class="project-desc">Frogger-inspired game with Levels, Infinite &amp; Two-Player modes.</p>
+                        <div class="project-tags"><span>Java</span><span>Swing</span></div>
+                        <a href="https://github.com/DivyamBanga/DivDodge" target="_blank" rel="noopener" class="project-link" aria-label="View DivDodge on GitHub">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ ABOUT ============ -->
+        <section id="about" class="section">
+            <div class="section-inner about-layout">
+                <div class="about-top">
+                    <div class="about-photos">
+                        <div class="slideshow">
+                            <img class="slide slide-a active" src="assets/d1.webp" alt="Div">
+                            <img class="slide slide-b" src="assets/d2.webp" alt="Div">
+                        </div>
+                    </div>
+                    <div class="about-text">
+                        <h2 class="section-heading">About</h2>
+                        <p class="about-bio">I'm Div. I study Management Engineering at Waterloo but spend most of my time building things. Games, apps, bots, whatever sounds interesting that week. I also run track, play way too much soccer, and teach robotics to kids who are better at it than I was.</p>
+                        <div class="about-now">
+                            <h3 class="about-now-title">Right now</h3>
+                            <ul>
+                                <li>Building with LLMs and biometric data</li>
+                                <li>Looking for Summer 2026 internships</li>
+                                <li>Trying to break my 5K PR</li>
+                            </ul>
+                        </div>
+                        <p class="about-yt">I also run <strong>DivCodez</strong>, a YouTube channel where I break down projects and teach programming.</p>
+                    </div>
+                </div>
+                <div class="timeline">
+                    <h3 class="timeline-title">My Journey</h3>
+                    <div class="timeline-track">
+                        <div class="timeline-line"></div>
+                        <div class="timeline-item" data-info="Wrote my first programs in Scratch and Python.">
+                            <div class="timeline-dot"></div>
+                            <span class="timeline-year">2019</span>
+                            <span class="timeline-label">First Code</span>
+                        </div>
+                        <div class="timeline-item" data-info="Joined FRC Team 4903. Learned C++ and autonomous systems. Honor roll with distinction.">
+                            <div class="timeline-dot"></div>
+                            <span class="timeline-year">2021</span>
+                            <span class="timeline-label">FRC &amp; C++</span>
+                        </div>
+                        <div class="timeline-item" data-info="Won 'Best Web App' at MasseyHacks. Founded the investing club.">
+                            <div class="timeline-dot"></div>
+                            <span class="timeline-year">2022</span>
+                            <span class="timeline-label">MasseyHacks</span>
+                        </div>
+                        <div class="timeline-item" data-info="Built myFarm with NASA satellite data. Won NASA Space Apps Challenge.">
+                            <div class="timeline-dot"></div>
+                            <span class="timeline-year">2023</span>
+                            <span class="timeline-label">NASA Winner</span>
+                        </div>
+                        <div class="timeline-item" data-info="Lead programmer for FRC 4903. Mentored new members and shipped the scouting app.">
+                            <div class="timeline-dot"></div>
+                            <span class="timeline-year">2024</span>
+                            <span class="timeline-label">FRC Lead</span>
+                        </div>
+                        <div class="timeline-item" data-info="Started Management Engineering at University of Waterloo. Built HouseLoo and OptionHarvest.">
+                            <div class="timeline-dot"></div>
+                            <span class="timeline-year">2025</span>
+                            <span class="timeline-label">Waterloo</span>
+                        </div>
+                        <div class="timeline-item" data-info="Won CxC AI Hackathon with Cortex. Built Lucid at HackCanada. Shipping more things.">
+                            <div class="timeline-dot"></div>
+                            <span class="timeline-year">2026</span>
+                            <span class="timeline-label">Building</span>
+                        </div>
+                    </div>
+                    <p class="timeline-detail" id="timeline-detail"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ============ CONTACT ============ -->
+        <section id="contact" class="section">
+            <div class="section-inner contact-layout">
+                <h2 class="contact-heading">Say hi</h2>
+                <p class="contact-message">Want to build something? I read every email.</p>
+                <a href="mailto:divyambanga@gmail.com" class="contact-email">divyambanga@gmail.com</a>
+                <div class="contact-socials">
+                    <a href="https://www.linkedin.com/in/divyam-banga-363990204/" target="_blank" rel="noopener">LinkedIn</a>
+                    <span class="contact-dot">&middot;</span>
+                    <a href="https://github.com/DivyamBanga" target="_blank" rel="noopener">GitHub</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
