@@ -15,9 +15,17 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="cursor-glow" aria-hidden="true"></div>
-    <div id="cursor-glow-sm" aria-hidden="true"></div>
+    <!-- ── Intro ── -->
+    <div class="intro" id="intro">
+        <div class="intro-bg"></div>
+        <span class="intro-name">Div</span>
+    </div>
 
+    <!-- ── Cursor FX ── -->
+    <canvas id="trail" aria-hidden="true"></canvas>
+    <div id="glow" aria-hidden="true"></div>
+
+    <!-- ── Nav ── -->
     <nav id="nav">
         <span class="nav-logo">Div</span>
         <div class="nav-links">
@@ -26,180 +34,124 @@
             <a href="assets/DivResume.pdf" target="_blank" rel="noopener">Resume <span class="ext">&#8599;</span></a>
             <a data-focus="contact">Contact</a>
         </div>
-        <button id="theme-toggle" aria-label="Toggle theme">
-            <svg class="icon-sun" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-            <svg class="icon-moon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        </button>
+        <div class="theme-switch">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <button id="theme-toggle" role="switch" aria-label="Toggle theme"><span class="sw-knob"></span></button>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </div>
     </nav>
 
-    <div class="bento">
-        <!-- ═══ HERO ═══ -->
+    <!-- ══ Bento ══ -->
+    <div class="bento" id="bento">
+        <!-- HERO -->
         <div class="cell cell-hero" style="--d:0">
             <h1 class="hero-name"><span class="hi">Div</span>yam Banga</h1>
             <div class="hero-typing">
-                <span class="typing-pre">I am a&nbsp;</span><span id="typing-text"></span><span class="typing-cursor">|</span>
+                <span class="tp">I am a&nbsp;</span><span id="typing-text"></span><span class="cur">|</span>
             </div>
             <p class="hero-tag">I like building things that work<br>and breaking things that don't.</p>
             <div class="hero-links">
-                <a href="https://www.linkedin.com/in/divyam-banga-363990204/" target="_blank" rel="noopener" class="h-link">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                </a>
-                <a href="https://github.com/DivyamBanga" target="_blank" rel="noopener" class="h-link">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                </a>
-                <a href="mailto:divyambanga@gmail.com" class="h-link">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
-                </a>
+                <a href="https://www.linkedin.com/in/divyam-banga-363990204/" target="_blank" rel="noopener" class="hl" title="LinkedIn"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+                <a href="https://github.com/DivyamBanga" target="_blank" rel="noopener" class="hl" title="GitHub"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                <a href="mailto:divyambanga@gmail.com" class="hl" title="Email"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></a>
             </div>
         </div>
 
-        <!-- ═══ LUCID ═══ -->
-        <div class="cell cell-project featured cell-lucid" data-group="projects" style="--d:1">
-            <span class="badge">&#9733; HackCanada Finalist</span>
-            <div class="thumb"><img src="assets/logo.png" alt="Lucid" loading="lazy"></div>
-            <h3 class="pname">Lucid</h3>
-            <p class="pdesc">Reads heart rate, blink rate &amp; breathing via camera to detect when you've stopped learning. Adapts sessions in real time.</p>
-            <div class="tags"><span>React</span><span>Node.js</span><span>WebSocket</span><span>Ollama</span></div>
-            <a href="https://github.com/DivyamBanga/Lucid" target="_blank" rel="noopener" class="card-ext" aria-label="GitHub"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
-        </div>
-
-        <!-- ═══ CORTEX ═══ -->
-        <div class="cell cell-project featured cell-cortex" data-group="projects" style="--d:2">
-            <span class="badge">&#9733; CxC Winner &mdash; $1k, 1st/95+</span>
-            <div class="thumb"><img src="assets/Thumbnail.webp" alt="Cortex" loading="lazy"></div>
-            <h3 class="pname">Cortex</h3>
-            <p class="pdesc">Turns ChatGPT &amp; Claude exports into a 3D semantic map. Search AI history &amp; pull context into new chats via MCP.</p>
-            <div class="tags"><span>Three.js</span><span>FastAPI</span><span>Ollama</span><span>MCP</span></div>
-            <a href="https://github.com/Vibhor7-7/Cortex-CxC" target="_blank" rel="noopener" class="card-ext" aria-label="GitHub"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
-        </div>
-
-        <!-- ═══ myFarm ═══ -->
-        <div class="cell cell-project featured cell-myfarm" data-group="projects" style="--d:3">
-            <span class="badge">&#9733; NASA Space Apps Winner</span>
-            <div class="thumb"><img src="assets/s5.png" alt="myFarm" loading="lazy"></div>
-            <h3 class="pname">myFarm</h3>
-            <p class="pdesc">Helps farmers grow more crops using NASA satellite data. Includes rover, data maps &amp; chatbot.</p>
-            <div class="tags"><span>Python</span><span>Flask</span><span>NASA</span><span>Plotly</span></div>
-            <a href="https://github.com/Doomsy1/NASA" target="_blank" rel="noopener" class="card-ext" aria-label="GitHub"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
-        </div>
-
-        <!-- ═══ ABOUT ═══ -->
-        <div class="cell cell-about" data-group="about" style="--d:4">
+        <!-- ABOUT -->
+        <div class="cell cell-about" data-group="about" style="--d:1">
             <div class="about-photo">
-                <div class="slideshow">
-                    <img class="slide slide-a active" src="assets/d1.webp" alt="Div">
-                    <img class="slide slide-b" src="assets/d2.webp" alt="Div">
-                </div>
+                <div class="slideshow"><img class="sl sl-a active" src="assets/d1.webp" alt="Div"><img class="sl sl-b" src="assets/d2.webp" alt="Div"></div>
             </div>
             <div class="about-body">
-                <h3 class="cell-title">About</h3>
-                <p class="about-bio">I'm Div. Management Engineering at Waterloo. I spend most of my time building things &mdash; games, apps, bots, whatever sounds interesting. I also run track, play soccer, and teach robotics.</p>
-                <div class="about-now">
-                    <span class="now-label">Right now</span>
-                    <ul>
-                        <li>Building with LLMs &amp; biometric data</li>
-                        <li>Looking for Summer 2026 internships</li>
-                        <li>Trying to break my 5K PR</li>
-                    </ul>
+                <h3 class="ctitle">About</h3>
+                <p class="abio">I'm Div — Management Engineering at Waterloo. I build games, apps, bots, whatever sounds interesting. I run track, play too much soccer, and teach robotics.</p>
+                <div class="anow">
+                    <span class="anow-l">Right now</span>
+                    <ul><li>Building with LLMs &amp; biometric data</li><li>Looking for Summer 2026 internships</li><li>Trying to break my 5K PR</li></ul>
                 </div>
-                <p class="about-yt"><strong>DivCodez</strong> &mdash; YouTube channel teaching programming.</p>
+                <p class="ayt"><strong>DivCodez</strong> &mdash; YouTube channel teaching programming.</p>
             </div>
         </div>
 
-        <!-- ═══ Chess Engine ═══ -->
-        <div class="cell cell-project secondary" data-group="projects" style="--d:5">
-            <h3 class="pname">Chess Engine</h3>
-            <p class="pdesc">Full chess AI with minimax + alpha-beta pruning in a 5-second window.</p>
-            <div class="tags"><span>Java</span><span>Minimax</span><span>Alpha-Beta</span></div>
-            <a href="https://github.com/DivyamBanga/Chess-Engine" target="_blank" rel="noopener" class="card-ext" aria-label="GitHub"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
+        <!-- PROJECTS LABEL -->
+        <h2 class="proj-label" style="--d:2">Projects</h2>
+
+        <!-- LUCID -->
+        <div class="cell cell-p cell-p1 feat" data-group="projects" style="--d:3">
+            <span class="badge">&#9733; HackCanada Finalist</span>
+            <div class="thumb"><img src="assets/logo.png" alt="Lucid" loading="lazy"></div>
+            <h3 class="pn">Lucid</h3>
+            <p class="pd">Reads heart rate, blink rate &amp; breathing via camera to detect when you've stopped learning. Adapts sessions in real time.</p>
+            <div class="tg"><span>React</span><span>Node.js</span><span>WebSocket</span><span>Ollama</span></div>
+            <a href="https://github.com/DivyamBanga/Lucid" target="_blank" rel="noopener" class="cext" aria-label="GitHub"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
         </div>
 
-        <!-- ═══ DarkStar ═══ -->
-        <div class="cell cell-project secondary" data-group="projects" style="--d:6">
-            <h3 class="pname">DarkStar</h3>
-            <p class="pdesc">Real-time multiplayer browser game. Absorb particles, grow, compete.</p>
-            <div class="tags"><span>Node.js</span><span>Socket.IO</span><span>Canvas</span></div>
-            <a href="https://github.com/DivyamBanga/DarkStar" target="_blank" rel="noopener" class="card-ext" aria-label="GitHub"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
+        <!-- CORTEX -->
+        <div class="cell cell-p cell-p2 feat" data-group="projects" style="--d:4">
+            <span class="badge">&#9733; CxC Winner &mdash; $1k, 1st/95+</span>
+            <div class="thumb"><img src="assets/Thumbnail.webp" alt="Cortex" loading="lazy"></div>
+            <h3 class="pn">Cortex</h3>
+            <p class="pd">Turns ChatGPT &amp; Claude exports into a 3D semantic map. Search AI history &amp; pull context into new chats via MCP.</p>
+            <div class="tg"><span>Three.js</span><span>FastAPI</span><span>Ollama</span><span>MCP</span></div>
+            <a href="https://github.com/Vibhor7-7/Cortex-CxC" target="_blank" rel="noopener" class="cext" aria-label="GitHub"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
         </div>
 
-        <!-- ═══ Scouting App ═══ -->
-        <div class="cell cell-project secondary" data-group="projects" style="--d:7">
-            <h3 class="pname">Scouting App</h3>
-            <p class="pdesc">Real-time FRC match data collection used by drive team at 10+ events.</p>
-            <div class="tags"><span>Flutter</span><span>Firebase</span><span>Dart</span></div>
-            <a href="https://github.com/DivyamBanga/ScoutApp2024" target="_blank" rel="noopener" class="card-ext" aria-label="GitHub"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
+        <!-- myFarm -->
+        <div class="cell cell-p cell-p3 feat" data-group="projects" style="--d:5">
+            <span class="badge">&#9733; NASA Space Apps Winner</span>
+            <div class="thumb"><img src="assets/s5.png" alt="myFarm" loading="lazy"></div>
+            <h3 class="pn">myFarm</h3>
+            <p class="pd">Helps farmers grow more crops using NASA satellite data. Includes rover, data maps &amp; chatbot.</p>
+            <div class="tg"><span>Python</span><span>Flask</span><span>NASA</span><span>Plotly</span></div>
+            <a href="https://github.com/Doomsy1/NASA" target="_blank" rel="noopener" class="cext" aria-label="GitHub"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
         </div>
 
-        <!-- ═══ CONTACT ═══ -->
-        <div class="cell cell-contact" data-group="contact" style="--d:8">
-            <h2 class="contact-h">Say hi</h2>
-            <p class="contact-msg">Want to build something? I read every email.</p>
-            <a href="mailto:divyambanga@gmail.com" class="contact-email">divyambanga@gmail.com</a>
-            <div class="contact-links">
-                <a href="https://www.linkedin.com/in/divyam-banga-363990204/" target="_blank" rel="noopener">LinkedIn</a>
-                <span class="dot">&middot;</span>
-                <a href="https://github.com/DivyamBanga" target="_blank" rel="noopener">GitHub</a>
-            </div>
+        <!-- Chess Engine -->
+        <div class="cell cell-p cell-p4" data-group="projects" style="--d:6">
+            <h3 class="pn">Chess Engine</h3>
+            <p class="pd">Full chess AI using minimax + alpha-beta pruning in a 5-second window.</p>
+            <div class="tg"><span>Java</span><span>Minimax</span><span>Alpha-Beta</span></div>
+            <a href="https://github.com/DivyamBanga/Chess-Engine" target="_blank" rel="noopener" class="cext" aria-label="GitHub"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
         </div>
 
-        <!-- ═══ Paint Clone ═══ -->
-        <div class="cell cell-project secondary" data-group="projects" style="--d:9">
-            <h3 class="pname">Paint Clone</h3>
-            <p class="pdesc">Clash Royale-themed drawing app with custom tools &amp; stamps.</p>
-            <div class="tags"><span>Python</span><span>Pygame</span></div>
-            <a href="https://github.com/DivyamBanga/paint" target="_blank" rel="noopener" class="card-ext" aria-label="GitHub"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
+        <!-- DarkStar -->
+        <div class="cell cell-p cell-p5" data-group="projects" style="--d:7">
+            <h3 class="pn">DarkStar</h3>
+            <p class="pd">Real-time multiplayer browser game. Absorb particles, grow, compete. Live chat &amp; leaderboard.</p>
+            <div class="tg"><span>Node.js</span><span>Socket.IO</span><span>Canvas</span></div>
+            <a href="https://github.com/DivyamBanga/DarkStar" target="_blank" rel="noopener" class="cext" aria-label="GitHub"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
         </div>
 
-        <!-- ═══ DivDodge ═══ -->
-        <div class="cell cell-project secondary" data-group="projects" style="--d:10">
-            <h3 class="pname">DivDodge</h3>
-            <p class="pdesc">Frogger-inspired game &mdash; Levels, Infinite &amp; Two-Player modes.</p>
-            <div class="tags"><span>Java</span><span>Swing</span></div>
-            <a href="https://github.com/DivyamBanga/DivDodge" target="_blank" rel="noopener" class="card-ext" aria-label="GitHub"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
+        <!-- Scouting App -->
+        <div class="cell cell-p cell-p6" data-group="projects" style="--d:8">
+            <h3 class="pn">Scouting App</h3>
+            <p class="pd">Real-time FRC match data collection used by drive team at 10+ competitions.</p>
+            <div class="tg"><span>Flutter</span><span>Firebase</span><span>Dart</span></div>
+            <a href="https://github.com/DivyamBanga/ScoutApp2024" target="_blank" rel="noopener" class="cext" aria-label="GitHub"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></a>
         </div>
 
-        <!-- ═══ TIMELINE ═══ -->
-        <div class="cell cell-timeline" style="--d:11">
-            <h3 class="cell-title tl-heading">My Journey</h3>
+        <!-- TIMELINE -->
+        <div class="cell cell-tl" style="--d:9">
+            <h3 class="ctitle">My Journey</h3>
             <div class="tl-track">
                 <div class="tl-line"></div>
-                <div class="tl-item" data-tip="Wrote my first programs in Scratch and Python.">
-                    <div class="tl-dot"></div>
-                    <span class="tl-year">2019</span>
-                    <span class="tl-label">First Code</span>
-                </div>
-                <div class="tl-item" data-tip="Joined FRC Team 4903. Learned C++ and autonomous systems. Honor roll with distinction.">
-                    <div class="tl-dot"></div>
-                    <span class="tl-year">2021</span>
-                    <span class="tl-label">FRC &amp; C++</span>
-                </div>
-                <div class="tl-item" data-tip="Won 'Best Web App' at MasseyHacks. Founded the investing club.">
-                    <div class="tl-dot"></div>
-                    <span class="tl-year">2022</span>
-                    <span class="tl-label">MasseyHacks</span>
-                </div>
-                <div class="tl-item" data-tip="Built myFarm with NASA satellite data. Won NASA Space Apps Challenge.">
-                    <div class="tl-dot"></div>
-                    <span class="tl-year">2023</span>
-                    <span class="tl-label">NASA Win</span>
-                </div>
-                <div class="tl-item" data-tip="Lead programmer for FRC 4903. Mentored new members and shipped the scouting app.">
-                    <div class="tl-dot"></div>
-                    <span class="tl-year">2024</span>
-                    <span class="tl-label">FRC Lead</span>
-                </div>
-                <div class="tl-item" data-tip="Started Management Engineering at University of Waterloo. Built HouseLoo and OptionHarvest.">
-                    <div class="tl-dot"></div>
-                    <span class="tl-year">2025</span>
-                    <span class="tl-label">Waterloo</span>
-                </div>
-                <div class="tl-item" data-tip="Won CxC AI Hackathon with Cortex. Built Lucid at HackCanada. Shipping more things.">
-                    <div class="tl-dot"></div>
-                    <span class="tl-year">2026</span>
-                    <span class="tl-label">Building</span>
-                </div>
+                <div class="tl-i" data-tip="Wrote my first programs in Scratch and Python."><div class="tl-dot"></div><span class="tl-y">2019</span><span class="tl-l">First Code</span></div>
+                <div class="tl-i" data-tip="Joined FRC Team 4903. Learned C++ and autonomous systems."><div class="tl-dot"></div><span class="tl-y">2021</span><span class="tl-l">FRC &amp; C++</span></div>
+                <div class="tl-i" data-tip="Won 'Best Web App' at MasseyHacks. Founded the investing club."><div class="tl-dot"></div><span class="tl-y">2022</span><span class="tl-l">MasseyHacks</span></div>
+                <div class="tl-i" data-tip="Built myFarm with NASA satellite data. Won NASA Space Apps."><div class="tl-dot"></div><span class="tl-y">2023</span><span class="tl-l">NASA Win</span></div>
+                <div class="tl-i" data-tip="Lead programmer for FRC 4903. Mentored members, shipped scouting app."><div class="tl-dot"></div><span class="tl-y">2024</span><span class="tl-l">FRC Lead</span></div>
+                <div class="tl-i" data-tip="Started Management Engineering at Waterloo. Built HouseLoo &amp; OptionHarvest."><div class="tl-dot"></div><span class="tl-y">2025</span><span class="tl-l">Waterloo</span></div>
+                <div class="tl-i" data-tip="Won CxC AI Hackathon with Cortex. Built Lucid at HackCanada."><div class="tl-dot"></div><span class="tl-y">2026</span><span class="tl-l">Building</span></div>
             </div>
             <p class="tl-detail" id="tl-detail"></p>
+        </div>
+
+        <!-- CONTACT -->
+        <div class="cell cell-cnt" data-group="contact" style="--d:10">
+            <h2 class="cnt-h">Say hi</h2>
+            <p class="cnt-msg">Want to build something? I read every email.</p>
+            <a href="mailto:divyambanga@gmail.com" class="cnt-email">divyambanga@gmail.com</a>
+            <div class="cnt-links"><a href="https://www.linkedin.com/in/divyam-banga-363990204/" target="_blank" rel="noopener">LinkedIn</a><span class="dot">&middot;</span><a href="https://github.com/DivyamBanga" target="_blank" rel="noopener">GitHub</a></div>
         </div>
     </div>
 
