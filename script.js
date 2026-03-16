@@ -1,433 +1,167 @@
 /* ===================================================
-   Div Banga — Site Interactions
+   Div Banga — Site interactions
+   Single-page scroll · cursor glow · bento hover
    =================================================== */
 
-// ─── Paint Canvas ───────────────────────────────────
-const paintCanvas = (() => {
-    const canvas = document.getElementById('paint-canvas');
-    const ctx = canvas.getContext('2d');
-    let lastPos = null;
-    let colorIdx = 0;
-    let isActive = false;
-    let hasPainted = false;
-    let rafId = null;
+// ─── Cursor Glow ────────────────────────────────────
+;(function cursorGlow() {
+    const outer = document.getElementById('cursor-glow');
+    const inner = document.getElementById('cursor-glow-sm');
+    if (!outer || !inner) return;
 
-    const palettes = {
-        light: [
-            [209, 64, 0, 0.10],
-            [255, 107, 53, 0.09],
-            [255, 160, 122, 0.08],
-            [255, 179, 71, 0.07],
-            [232, 56, 13, 0.07],
-        ],
-        dark: [
-            [79, 195, 247, 0.13],
-            [124, 77, 255, 0.11],
-            [0, 229, 255, 0.09],
-            [255, 110, 64, 0.10],
-            [179, 136, 255, 0.09],
-        ]
-    };
+    let mx = window.innerWidth / 2;
+    let my = window.innerHeight / 2;
+    let ox = mx, oy = my;
+    let ix = mx, iy = my;
 
-    function resize() {
-        const dpr = window.devicePixelRatio || 1;
-        canvas.width = window.innerWidth * dpr;
-        canvas.height = window.innerHeight * dpr;
-        canvas.style.width = window.innerWidth + 'px';
-        canvas.style.height = window.innerHeight + 'px';
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
+    window.addEventListener('mousemove', e => {
+        mx = e.clientX;
+        my = e.clientY;
+    });
 
-    function getColor() {
-        const theme = document.documentElement.dataset.theme || 'light';
-        const pal = palettes[theme];
-        const c = pal[colorIdx % pal.length];
-        colorIdx++;
-        return c;
-    }
-
-    function drawSplat(x, y, radius, rgba) {
-        const grad = ctx.createRadialGradient(x, y, 0, x, y, radius);
-        grad.addColorStop(0, `rgba(${rgba[0]},${rgba[1]},${rgba[2]},${rgba[3]})`);
-        grad.addColorStop(0.6, `rgba(${rgba[0]},${rgba[1]},${rgba[2]},${rgba[3] * 0.4})`);
-        grad.addColorStop(1, `rgba(${rgba[0]},${rgba[1]},${rgba[2]},0)`);
-        ctx.fillStyle = grad;
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fill();
-    }
-
-    function onMouseMove(e) {
-        if (!isActive) return;
-
-        const x = e.clientX;
-        const y = e.clientY;
-
-        if (!hasPainted) {
-            hasPainted = true;
-            const hint = document.getElementById('paint-hint');
-            if (hint) hint.classList.add('faded');
+    // show after first move
+    let shown = false;
+    window.addEventListener('mousemove', function show() {
+        if (!shown) {
+            document.body.classList.add('glow-ready');
+            shown = true;
         }
+    });
 
-        if (lastPos) {
-            const dx = x - lastPos.x;
-            const dy = y - lastPos.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            if (dist > 1) {
-                const steps = Math.ceil(dist / 3);
-                for (let i = 0; i < steps; i++) {
-                    const t = i / steps;
-                    const px = lastPos.x + dx * t;
-                    const py = lastPos.y + dy * t;
-                    const speed = dist / steps;
-                    const radius = Math.max(5, 35 - speed * 0.4) + Math.random() * 10;
-                    const color = getColor();
-
-                    drawSplat(
-                        px + (Math.random() - 0.5) * 4,
-                        py + (Math.random() - 0.5) * 4,
-                        radius,
-                        color
-                    );
-
-                    // Scatter particles
-                    if (Math.random() < 0.25) {
-                        const angle = Math.random() * Math.PI * 2;
-                        const scatter = Math.random() * speed * 2.5;
-                        drawSplat(
-                            px + Math.cos(angle) * scatter,
-                            py + Math.sin(angle) * scatter,
-                            radius * 0.35,
-                            getColor()
-                        );
-                    }
-                }
-            }
-        }
-        lastPos = { x, y };
-    }
-
-    // Very slow fade so painting accumulates but doesn't over-saturate
     function tick() {
-        ctx.save();
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.globalCompositeOperation = 'destination-out';
-        ctx.fillStyle = 'rgba(0,0,0,0.002)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.restore();
-        ctx.globalCompositeOperation = 'source-over';
-        rafId = requestAnimationFrame(tick);
+        ox += (mx - ox) * 0.045;
+        oy += (my - oy) * 0.045;
+        ix += (mx - ix) * 0.13;
+        iy += (my - iy) * 0.13;
+        outer.style.transform = `translate(${ox - 275}px,${oy - 275}px)`;
+        inner.style.transform = `translate(${ix - 130}px,${iy - 130}px)`;
+        requestAnimationFrame(tick);
     }
-
-    function show() {
-        isActive = true;
-        canvas.classList.add('active');
-        canvas.classList.remove('hidden');
-        lastPos = null;
-    }
-
-    function hide() {
-        isActive = false;
-        canvas.classList.remove('active');
-        canvas.classList.add('hidden');
-    }
-
-    function clear() {
-        ctx.save();
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.restore();
-        hasPainted = false;
-        const hint = document.getElementById('paint-hint');
-        if (hint) hint.classList.remove('faded');
-    }
-
-    // Init
-    resize();
-    window.addEventListener('resize', resize);
-    window.addEventListener('mousemove', onMouseMove);
     tick();
-
-    return { show, hide, clear };
 })();
 
 
 // ─── Typing Effect ──────────────────────────────────
-const typingEffect = (() => {
+;(function typing() {
     const el = document.getElementById('typing-text');
+    if (!el) return;
     const words = ['engineer', 'builder', 'competitor', 'maker'];
-    let wordIdx = 0;
-    let charIdx = 0;
-    let isDeleting = false;
-    let timeout = null;
+    let wi = 0, ci = 0, deleting = false;
 
-    function tick() {
-        const current = words[wordIdx];
-
-        if (!isDeleting) {
-            charIdx++;
-            el.textContent = current.slice(0, charIdx);
-            if (charIdx === current.length) {
-                timeout = setTimeout(() => { isDeleting = true; tick(); }, 1800);
-                return;
-            }
-            timeout = setTimeout(tick, 80 + Math.random() * 40);
+    function step() {
+        const word = words[wi];
+        if (!deleting) {
+            ci++;
+            el.textContent = word.slice(0, ci);
+            if (ci === word.length) { setTimeout(() => { deleting = true; step(); }, 1800); return; }
+            setTimeout(step, 80 + Math.random() * 40);
         } else {
-            charIdx--;
-            el.textContent = current.slice(0, charIdx);
-            if (charIdx === 0) {
-                isDeleting = false;
-                wordIdx = (wordIdx + 1) % words.length;
-                timeout = setTimeout(tick, 400);
-                return;
-            }
-            timeout = setTimeout(tick, 40 + Math.random() * 20);
+            ci--;
+            el.textContent = word.slice(0, ci);
+            if (ci === 0) { deleting = false; wi = (wi + 1) % words.length; setTimeout(step, 400); return; }
+            setTimeout(step, 40 + Math.random() * 20);
         }
     }
-
-    function start() {
-        // Small delay to let entrance animations play first
-        setTimeout(tick, 900);
-    }
-
-    return { start };
+    setTimeout(step, 900);
 })();
 
 
 // ─── Theme Toggle ───────────────────────────────────
-const themeToggle = (() => {
+;(function theme() {
     const btn = document.getElementById('theme-toggle');
     const html = document.documentElement;
+    function set(t) { html.dataset.theme = t; localStorage.setItem('div-theme', t); }
 
-    function set(theme) {
-        html.dataset.theme = theme;
-        localStorage.setItem('div-theme', theme);
-    }
+    const saved = localStorage.getItem('div-theme');
+    if (saved) set(saved);
+    else if (window.matchMedia('(prefers-color-scheme:dark)').matches) set('dark');
 
-    function init() {
-        const saved = localStorage.getItem('div-theme');
-        if (saved) {
-            set(saved);
-        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            set('dark');
-        }
-
-        btn.addEventListener('click', () => {
-            const next = html.dataset.theme === 'light' ? 'dark' : 'light';
-            set(next);
-        });
-    }
-
-    return { init };
+    btn.addEventListener('click', () => set(html.dataset.theme === 'light' ? 'dark' : 'light'));
 })();
 
 
-// ─── Section Navigation ─────────────────────────────
-const navigation = (() => {
-    const sections = document.querySelectorAll('.section');
-    const navLinks = document.querySelectorAll('#nav a[data-section]');
-    let currentSection = 'home';
-    let transitioning = false;
+// ─── Nav: scroll-spy + scrolled state ───────────────
+;(function nav() {
+    const navEl  = document.getElementById('nav');
+    const links  = document.querySelectorAll('.nav-links a[href^="#"]');
+    const sects  = Array.from(document.querySelectorAll('section[id]'));
 
-    function goTo(id) {
-        if (id === currentSection || transitioning) return;
-        transitioning = true;
+    function onScroll() {
+        navEl.classList.toggle('scrolled', window.scrollY > 50);
 
-        const leaving = document.getElementById(currentSection);
-        const entering = document.getElementById(id);
-
-        // Update nav link state
-        navLinks.forEach(a => a.classList.toggle('active', a.dataset.section === id));
-
-        // Canvas visibility
-        if (id === 'home') {
-            paintCanvas.clear();
-            paintCanvas.show();
-        } else {
-            paintCanvas.hide();
+        const scrollY = window.scrollY + 120;
+        let activeId = sects[0]?.id;
+        for (const s of sects) {
+            if (scrollY >= s.offsetTop) activeId = s.id;
         }
-
-        // Animate out
-        leaving.classList.add('leaving');
-        leaving.classList.remove('active');
-
-        // Animate in
-        setTimeout(() => {
-            entering.classList.add('active');
-            currentSection = id;
-
-            // Clean up leaving state
-            setTimeout(() => {
-                leaving.classList.remove('leaving');
-                transitioning = false;
-            }, 460);
-        }, 200);
-    }
-
-    function init() {
-        // Nav clicks
-        navLinks.forEach(a => {
-            a.addEventListener('click', (e) => {
-                e.preventDefault();
-                goTo(a.dataset.section);
-            });
+        links.forEach(a => {
+            const target = a.getAttribute('href').replace('#', '');
+            a.classList.toggle('active', target === activeId);
         });
-
-        // Assign stagger indices to project cards
-        document.querySelectorAll('.project-card').forEach((card, i) => {
-            card.style.setProperty('--i', i);
-        });
-
-        // Start with canvas active on hero
-        paintCanvas.show();
     }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+})();
 
-    return { init, goTo };
+
+// ─── Scroll Reveal (IntersectionObserver) ───────────
+;(function reveal() {
+    const items = document.querySelectorAll('.reveal');
+    if (!items.length) return;
+
+    const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('revealed');
+                obs.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    items.forEach(el => obs.observe(el));
 })();
 
 
 // ─── Photo Slideshow ────────────────────────────────
-const slideshow = (() => {
-    const images = [
-        'assets/d1.webp', 'assets/d2.webp', 'assets/d3.webp', 'assets/d4.webp',
-        'assets/d5.webp', 'assets/d6.webp', 'assets/d7.webp', 'assets/d8.webp',
-        'assets/d9.webp', 'assets/d10.webp', 'assets/d11.webp', 'assets/d12.webp'
+;(function slideshow() {
+    const imgs = [
+        'assets/d1.webp','assets/d2.webp','assets/d3.webp','assets/d4.webp',
+        'assets/d5.webp','assets/d6.webp','assets/d7.webp','assets/d8.webp',
+        'assets/d9.webp','assets/d10.webp','assets/d11.webp','assets/d12.webp'
     ];
-    let current = 0;
-    let slideA, slideB;
-    let aIsActive = true;
+    const a = document.querySelector('.slide-a');
+    const b = document.querySelector('.slide-b');
+    if (!a || !b) return;
 
-    function init() {
-        slideA = document.querySelector('.slide-a');
-        slideB = document.querySelector('.slide-b');
-        if (!slideA || !slideB) return;
+    let idx = 0, aActive = true;
 
-        // Preload a few images
-        images.slice(0, 4).forEach(src => {
-            const img = new Image();
-            img.src = src;
-        });
+    // preload first few
+    imgs.slice(0, 4).forEach(s => { const i = new Image(); i.src = s; });
 
-        setInterval(next, 3500);
-    }
-
-    function next() {
-        current = (current + 1) % images.length;
-
-        if (aIsActive) {
-            slideB.src = images[current];
-            slideB.onload = () => {
-                slideA.classList.remove('active');
-                slideB.classList.add('active');
-                aIsActive = false;
-            };
+    setInterval(() => {
+        idx = (idx + 1) % imgs.length;
+        if (aActive) {
+            b.src = imgs[idx];
+            b.onload = () => { a.classList.remove('active'); b.classList.add('active'); aActive = false; };
         } else {
-            slideA.src = images[current];
-            slideA.onload = () => {
-                slideB.classList.remove('active');
-                slideA.classList.add('active');
-                aIsActive = true;
-            };
+            a.src = imgs[idx];
+            a.onload = () => { b.classList.remove('active'); a.classList.add('active'); aActive = true; };
         }
-    }
-
-    return { init };
+    }, 3500);
 })();
 
 
-// ─── Card Tilt Effect ───────────────────────────────
-const cardTilt = (() => {
-    function init() {
-        document.querySelectorAll('[data-tilt]').forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = (e.clientX - rect.left) / rect.width;
-                const y = (e.clientY - rect.top) / rect.height;
-                const tiltX = (y - 0.5) * -8;
-                const tiltY = (x - 0.5) * 8;
-                const shadowX = (x - 0.5) * -16;
-                const shadowY = (y - 0.5) * -16;
-
-                card.style.transform = `perspective(700px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(1.025)`;
-                card.style.boxShadow = `${shadowX}px ${shadowY}px 30px rgba(0,0,0,0.08)`;
-            });
-
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = '';
-                card.style.boxShadow = '';
-            });
+// ─── Card tilt on hover ─────────────────────────────
+;(function tilt() {
+    document.querySelectorAll('.project-card').forEach(card => {
+        card.addEventListener('mousemove', e => {
+            const r = card.getBoundingClientRect();
+            const x = (e.clientX - r.left) / r.width;
+            const y = (e.clientY - r.top) / r.height;
+            const tx = (y - .5) * -6;
+            const ty = (x - .5) * 6;
+            card.style.transform = `perspective(700px) rotateX(${tx}deg) rotateY(${ty}deg) translateY(-6px) scale(1.03)`;
         });
-    }
-
-    return { init };
-})();
-
-
-// ─── Timeline Interaction ───────────────────────────
-const timeline = (() => {
-    function init() {
-        const items = document.querySelectorAll('.timeline-item');
-        const detail = document.getElementById('timeline-detail');
-        if (!detail) return;
-
-        items.forEach(item => {
-            item.addEventListener('mouseenter', () => {
-                items.forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
-                detail.textContent = item.dataset.info;
-                detail.style.opacity = '1';
-            });
-
-            item.addEventListener('mouseleave', () => {
-                item.classList.remove('active');
-                detail.style.opacity = '0';
-            });
-        });
-
-        // Activate last item by default when about section is shown
-        const observer = new MutationObserver(() => {
-            const aboutSection = document.getElementById('about');
-            if (aboutSection.classList.contains('active')) {
-                const last = items[items.length - 1];
-                last.classList.add('active');
-                detail.textContent = last.dataset.info;
-                detail.style.opacity = '1';
-            }
-        });
-        const aboutSection = document.getElementById('about');
-        observer.observe(aboutSection, { attributes: true, attributeFilter: ['class'] });
-    }
-
-    return { init };
-})();
-
-
-// ─── Keyboard Navigation ────────────────────────────
-function initKeyboard() {
-    const sectionOrder = ['home', 'projects', 'about', 'contact'];
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-            e.preventDefault();
-            const idx = sectionOrder.indexOf(document.querySelector('.section.active')?.id);
-            if (idx < sectionOrder.length - 1) navigation.goTo(sectionOrder[idx + 1]);
-        }
-        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-            e.preventDefault();
-            const idx = sectionOrder.indexOf(document.querySelector('.section.active')?.id);
-            if (idx > 0) navigation.goTo(sectionOrder[idx - 1]);
-        }
+        card.addEventListener('mouseleave', () => { card.style.transform = ''; });
     });
-}
-
-
-// ─── Initialize Everything ──────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-    themeToggle.init();
-    navigation.init();
-    typingEffect.start();
-    slideshow.init();
-    cardTilt.init();
-    timeline.init();
-    initKeyboard();
-});
+})();
