@@ -1,9 +1,10 @@
 /* ===================================================
-   Div Banga — Bento portfolio v5
-   Intro · Trail · Glow · Typing · Switch · Slideshow
+   Div Banga — Bento portfolio v6
+   Fast intro · Grid-resize hover · Subtle trail
+   Mobile responsive with scroll animations
    =================================================== */
 
-/* ── Intro Sequence ─────────────────────────────────── */
+/* ── Intro Sequence — very fast ─────────────────────── */
 ;(function () {
     const intro = document.getElementById('intro');
     if (!intro) { document.body.classList.add('ready'); return; }
@@ -12,35 +13,65 @@
         intro.classList.add('exit');
         setTimeout(() => {
             document.body.classList.add('ready');
-            setTimeout(() => intro.remove(), 600);
-        }, 500);
-    }, 1200);
+            setTimeout(() => intro.remove(), 300);
+        }, 250);
+    }, 350);
 })();
 
 
-/* ── Canvas Cursor Trail ────────────────────────────── */
+/* ── Free cells after entrance animation ────────────── */
 ;(function () {
+    const bento = document.getElementById('bento');
+    document.querySelectorAll('.cell, .proj-label').forEach(el => {
+        el.addEventListener('animationend', function handler(e) {
+            if (e.animationName === 'cellIn') {
+                el.classList.add('entered');
+                el.removeEventListener('animationend', handler);
+            }
+        });
+    });
+
+    // Enable hover effects after all cells have entered
+    const maxD = Math.max(...Array.from(document.querySelectorAll('[style*="--d"]')).map(
+        el => parseInt(el.style.getPropertyValue('--d')) || 0
+    ));
+    const introTime = 600;   // intro duration
+    const cascadeTime = maxD * 50 + 500; // last cell delay + animation
+    setTimeout(() => {
+        if (bento) bento.classList.add('hoverable');
+    }, introTime + cascadeTime);
+})();
+
+
+/* ── Canvas Cursor Trail — subtle, consistent ───────── */
+;(function () {
+    if (window.innerWidth <= 768) return;
     const c = document.getElementById('trail');
     if (!c) return;
     const ctx = c.getContext('2d');
     const pts = [];
-    const MAX = 50;
-    const LIFETIME = 35;
-    let w, h;
-    let mx = -1000, my = -1000;
+    const MAX = 60;
+    const LIFETIME = 45;
+    let w, h, mx = -1000, my = -1000;
 
     function resize() { w = c.width = innerWidth; h = c.height = innerHeight; }
     resize();
     addEventListener('resize', resize);
     addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
 
-    function getTrailColor() {
-        const s = getComputedStyle(document.documentElement);
-        return {
-            r: parseInt(s.getPropertyValue('--trail-r')) || 200,
-            g: parseInt(s.getPropertyValue('--trail-g')) || 54,
-            b: parseInt(s.getPropertyValue('--trail-b')) || 0
-        };
+    let cachedCol = null, lastCheck = 0;
+    function getCol() {
+        const now = Date.now();
+        if (!cachedCol || now - lastCheck > 500) {
+            const s = getComputedStyle(document.documentElement);
+            cachedCol = {
+                r: parseInt(s.getPropertyValue('--trail-r')) || 13,
+                g: parseInt(s.getPropertyValue('--trail-g')) || 148,
+                b: parseInt(s.getPropertyValue('--trail-b')) || 136
+            };
+            lastCheck = now;
+        }
+        return cachedCol;
     }
 
     ;(function draw() {
@@ -55,30 +86,46 @@
         }
         if (pts.length < 3) { requestAnimationFrame(draw); return; }
 
-        const col = getTrailColor();
+        const col = getCol();
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
 
+        // Glow pass — wide, very transparent
         for (let i = 1; i < pts.length - 1; i++) {
+            const t = i / (pts.length - 1);
             const p0 = pts[i - 1], p1 = pts[i], p2 = pts[i + 1];
-            const alpha = 1 - (p1.age / LIFETIME);
-            const lw = Math.max(0.5, alpha * 2.5);
-            ctx.beginPath();
-            ctx.strokeStyle = `rgba(${col.r},${col.g},${col.b},${(alpha * .45).toFixed(3)})`;
-            ctx.lineWidth = lw;
             const mx1 = (p0.x + p1.x) / 2, my1 = (p0.y + p1.y) / 2;
             const mx2 = (p1.x + p2.x) / 2, my2 = (p1.y + p2.y) / 2;
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(${col.r},${col.g},${col.b},${(t * t * 0.06).toFixed(4)})`;
+            ctx.lineWidth = 8;
             ctx.moveTo(mx1, my1);
             ctx.quadraticCurveTo(p1.x, p1.y, mx2, my2);
             ctx.stroke();
         }
+
+        // Main trail — thin, consistent
+        for (let i = 1; i < pts.length - 1; i++) {
+            const t = i / (pts.length - 1);
+            const p0 = pts[i - 1], p1 = pts[i], p2 = pts[i + 1];
+            const mx1 = (p0.x + p1.x) / 2, my1 = (p0.y + p1.y) / 2;
+            const mx2 = (p1.x + p2.x) / 2, my2 = (p1.y + p2.y) / 2;
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(${col.r},${col.g},${col.b},${(t * 0.28).toFixed(4)})`;
+            ctx.lineWidth = 1.5;
+            ctx.moveTo(mx1, my1);
+            ctx.quadraticCurveTo(p1.x, p1.y, mx2, my2);
+            ctx.stroke();
+        }
+
         requestAnimationFrame(draw);
     })();
 })();
 
 
-/* ── Glow Orb ───────────────────────────────────────── */
+/* ── Glow Orb — very subtle ─────────────────────────── */
 ;(function () {
+    if (window.innerWidth <= 768) return;
     const glow = document.getElementById('glow');
     if (!glow) return;
     let gx = innerWidth / 2, gy = innerHeight / 2;
@@ -91,9 +138,9 @@
     });
 
     ;(function tick() {
-        gx += (tx - gx) * .06;
-        gy += (ty - gy) * .06;
-        glow.style.transform = `translate(${gx - 210}px,${gy - 210}px)`;
+        gx += (tx - gx) * 0.04;
+        gy += (ty - gy) * 0.04;
+        glow.style.transform = `translate(${gx - 275}px,${gy - 275}px)`;
         requestAnimationFrame(tick);
     })();
 })();
@@ -120,21 +167,24 @@
             setTimeout(step, 40 + Math.random() * 20);
         }
     }
-    setTimeout(step, 1800);
+    setTimeout(step, 700);
 })();
 
 
-/* ── Theme Toggle ───────────────────────────────────── */
+/* ── Theme Toggle — desktop + mobile ────────────────── */
 ;(function () {
-    const btn = document.getElementById('theme-toggle');
     const html = document.documentElement;
     const set = t => { html.dataset.theme = t; localStorage.setItem('div-theme', t); };
+    const toggle = () => set(html.dataset.theme === 'light' ? 'dark' : 'light');
 
     const saved = localStorage.getItem('div-theme');
     if (saved) set(saved);
     else if (matchMedia('(prefers-color-scheme:dark)').matches) set('dark');
 
-    btn.addEventListener('click', () => set(html.dataset.theme === 'light' ? 'dark' : 'light'));
+    const dt = document.getElementById('theme-toggle');
+    const mt = document.getElementById('mobile-theme-toggle');
+    if (dt) dt.addEventListener('click', toggle);
+    if (mt) mt.addEventListener('click', toggle);
 })();
 
 
@@ -165,7 +215,7 @@
 })();
 
 
-/* ── Timeline Hover ─────────────────────────────────── */
+/* ── Timeline Hover (desktop) ───────────────────────── */
 ;(function () {
     const detail = document.getElementById('tl-detail');
     if (!detail) return;
@@ -178,7 +228,47 @@
         });
         item.addEventListener('mouseleave', () => {
             detail.textContent = defaultText;
-            detail.style.opacity = '.6';
+            detail.style.opacity = '.55';
         });
     });
+})();
+
+
+/* ── Mobile: Scroll animations + active nav ─────────── */
+;(function () {
+    if (window.innerWidth > 768) return;
+
+    // Staggered entrance on scroll
+    const elements = document.querySelectorAll('.cell, .proj-label');
+    let staggerCount = 0;
+
+    const enterObserver = new IntersectionObserver(entries => {
+        const entering = entries.filter(e => e.isIntersecting);
+        entering.forEach((e, i) => {
+            e.target.style.transitionDelay = `${(staggerCount + i) * 0.06}s`;
+            e.target.classList.add('visible');
+            enterObserver.unobserve(e.target);
+        });
+        staggerCount += entering.length;
+        // Reset stagger after a pause
+        setTimeout(() => { staggerCount = 0; }, 400);
+    }, { threshold: 0.12 });
+
+    elements.forEach(el => enterObserver.observe(el));
+
+    // Active nav link on scroll
+    const sections = document.querySelectorAll('[id^="sect-"]');
+    const navLinks = document.querySelectorAll('.mn-links a');
+
+    const navObserver = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                navLinks.forEach(l => l.classList.remove('active'));
+                const link = document.querySelector(`.mn-links a[href="#${e.target.id}"]`);
+                if (link) link.classList.add('active');
+            }
+        });
+    }, { threshold: 0.25, rootMargin: '-48px 0px -50% 0px' });
+
+    sections.forEach(s => navObserver.observe(s));
 })();
