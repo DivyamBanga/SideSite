@@ -1,6 +1,6 @@
 /* ===================================================
-   Div Banga — Bento portfolio v4
-   Intro · Trail canvas · Glow · Typing · Theme switch
+   Div Banga — Bento portfolio v5
+   Intro · Trail · Glow · Typing · Switch · Slideshow
    =================================================== */
 
 /* ── Intro Sequence ─────────────────────────────────── */
@@ -8,13 +8,10 @@
     const intro = document.getElementById('intro');
     if (!intro) { document.body.classList.add('ready'); return; }
 
-    // After name animation finishes, exit the overlay
     setTimeout(() => {
         intro.classList.add('exit');
-        // After overlay slides out, reveal cells
         setTimeout(() => {
             document.body.classList.add('ready');
-            // Clean up DOM after animation
             setTimeout(() => intro.remove(), 600);
         }, 500);
     }, 1200);
@@ -26,23 +23,16 @@
     const c = document.getElementById('trail');
     if (!c) return;
     const ctx = c.getContext('2d');
-    const pts = [];          // {x, y, age}
+    const pts = [];
     const MAX = 50;
-    const LIFETIME = 35;     // frames a point lives
+    const LIFETIME = 35;
     let w, h;
     let mx = -1000, my = -1000;
 
-    function resize() {
-        w = c.width = innerWidth;
-        h = c.height = innerHeight;
-    }
+    function resize() { w = c.width = innerWidth; h = c.height = innerHeight; }
     resize();
     addEventListener('resize', resize);
-
-    addEventListener('mousemove', e => {
-        mx = e.clientX;
-        my = e.clientY;
-    });
+    addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
 
     function getTrailColor() {
         const s = getComputedStyle(document.documentElement);
@@ -55,49 +45,33 @@
 
     ;(function draw() {
         ctx.clearRect(0, 0, w, h);
-
-        // Push a new point each frame
         if (mx > -500) {
             pts.push({ x: mx, y: my, age: 0 });
             if (pts.length > MAX) pts.shift();
         }
-
-        // Age all points
         for (let i = pts.length - 1; i >= 0; i--) {
             pts[i].age++;
-            if (pts[i].age > LIFETIME) { pts.splice(i, 1); }
+            if (pts[i].age > LIFETIME) pts.splice(i, 1);
         }
-
         if (pts.length < 3) { requestAnimationFrame(draw); return; }
 
         const col = getTrailColor();
-
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
 
-        // Draw the trail as a smooth quadratic curve with fading segments
         for (let i = 1; i < pts.length - 1; i++) {
-            const p0 = pts[i - 1];
-            const p1 = pts[i];
-            const p2 = pts[i + 1];
-
+            const p0 = pts[i - 1], p1 = pts[i], p2 = pts[i + 1];
             const alpha = 1 - (p1.age / LIFETIME);
-            const lw = Math.max(0.5, (1 - p1.age / LIFETIME) * 2.5);
-
+            const lw = Math.max(0.5, alpha * 2.5);
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(${col.r},${col.g},${col.b},${(alpha * 0.45).toFixed(3)})`;
+            ctx.strokeStyle = `rgba(${col.r},${col.g},${col.b},${(alpha * .45).toFixed(3)})`;
             ctx.lineWidth = lw;
-
-            const mx1 = (p0.x + p1.x) / 2;
-            const my1 = (p0.y + p1.y) / 2;
-            const mx2 = (p1.x + p2.x) / 2;
-            const my2 = (p1.y + p2.y) / 2;
-
+            const mx1 = (p0.x + p1.x) / 2, my1 = (p0.y + p1.y) / 2;
+            const mx2 = (p1.x + p2.x) / 2, my2 = (p1.y + p2.y) / 2;
             ctx.moveTo(mx1, my1);
             ctx.quadraticCurveTo(p1.x, p1.y, mx2, my2);
             ctx.stroke();
         }
-
         requestAnimationFrame(draw);
     })();
 })();
@@ -112,14 +86,13 @@
     let shown = false;
 
     addEventListener('mousemove', e => {
-        tx = e.clientX;
-        ty = e.clientY;
+        tx = e.clientX; ty = e.clientY;
         if (!shown) { document.body.classList.add('glow-on'); shown = true; }
     });
 
     ;(function tick() {
-        gx += (tx - gx) * 0.06;
-        gy += (ty - gy) * 0.06;
+        gx += (tx - gx) * .06;
+        gy += (ty - gy) * .06;
         glow.style.transform = `translate(${gx - 210}px,${gy - 210}px)`;
         requestAnimationFrame(tick);
     })();
@@ -147,7 +120,7 @@
             setTimeout(step, 40 + Math.random() * 20);
         }
     }
-    setTimeout(step, 1800); // start after intro
+    setTimeout(step, 1800);
 })();
 
 
@@ -165,24 +138,6 @@
 })();
 
 
-/* ── Nav → Cell Pulse ───────────────────────────────── */
-;(function () {
-    document.querySelectorAll('.nav-links a[data-focus]').forEach(a => {
-        a.addEventListener('click', e => {
-            e.preventDefault();
-            const group = a.dataset.focus;
-            const cells = document.querySelectorAll(`.cell[data-group="${group}"]`);
-            cells.forEach(c => {
-                c.classList.remove('pulse');
-                void c.offsetWidth;          // reflow to restart animation
-                c.classList.add('pulse');
-                c.addEventListener('animationend', () => c.classList.remove('pulse'), { once: true });
-            });
-        });
-    });
-})();
-
-
 /* ── Photo Slideshow ────────────────────────────────── */
 ;(function () {
     const imgs = [
@@ -195,7 +150,6 @@
     if (!a || !b) return;
     let idx = 0, aOn = true;
 
-    // Preload first few
     imgs.slice(0, 3).forEach(s => { const i = new Image(); i.src = s; });
 
     setInterval(() => {
@@ -215,14 +169,16 @@
 ;(function () {
     const detail = document.getElementById('tl-detail');
     if (!detail) return;
+    const defaultText = detail.textContent;
 
-    document.querySelectorAll('.tl-i').forEach(item => {
+    document.querySelectorAll('.tl-item').forEach(item => {
         item.addEventListener('mouseenter', () => {
             detail.textContent = item.dataset.tip;
             detail.style.opacity = '1';
         });
         item.addEventListener('mouseleave', () => {
-            detail.style.opacity = '0';
+            detail.textContent = defaultText;
+            detail.style.opacity = '.6';
         });
     });
 })();
