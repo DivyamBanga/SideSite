@@ -1,129 +1,93 @@
 /* ===================================================
-   Div Banga — Site interactions
-   Single-page scroll · cursor glow · bento hover
+   Div Banga — Bento portfolio interactions
+   Full viewport · cursor glow · zoom on hover
    =================================================== */
 
-// ─── Cursor Glow ────────────────────────────────────
-;(function cursorGlow() {
-    const outer = document.getElementById('cursor-glow');
-    const inner = document.getElementById('cursor-glow-sm');
-    if (!outer || !inner) return;
-
-    let mx = window.innerWidth / 2;
-    let my = window.innerHeight / 2;
-    let ox = mx, oy = my;
-    let ix = mx, iy = my;
-
-    window.addEventListener('mousemove', e => {
-        mx = e.clientX;
-        my = e.clientY;
-    });
-
-    // show after first move
+/* ── Cursor Glow ─────────────────────────────────── */
+;(function () {
+    const o = document.getElementById('cursor-glow');
+    const s = document.getElementById('cursor-glow-sm');
+    if (!o || !s) return;
+    let mx = innerWidth / 2, my = innerHeight / 2;
+    let ox = mx, oy = my, sx = mx, sy = my;
     let shown = false;
-    window.addEventListener('mousemove', function show() {
-        if (!shown) {
-            document.body.classList.add('glow-ready');
-            shown = true;
-        }
+
+    addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        if (!shown) { document.body.classList.add('glow-on'); shown = true; }
     });
 
-    function tick() {
-        ox += (mx - ox) * 0.045;
-        oy += (my - oy) * 0.045;
-        ix += (mx - ix) * 0.13;
-        iy += (my - iy) * 0.13;
-        outer.style.transform = `translate(${ox - 275}px,${oy - 275}px)`;
-        inner.style.transform = `translate(${ix - 130}px,${iy - 130}px)`;
+    (function tick() {
+        ox += (mx - ox) * .04;
+        oy += (my - oy) * .04;
+        sx += (mx - sx) * .12;
+        sy += (my - sy) * .12;
+        o.style.transform = `translate(${ox - 260}px,${oy - 260}px)`;
+        s.style.transform = `translate(${sx - 120}px,${sy - 120}px)`;
         requestAnimationFrame(tick);
-    }
-    tick();
+    })();
 })();
 
 
-// ─── Typing Effect ──────────────────────────────────
-;(function typing() {
+/* ── Typing Effect ───────────────────────────────── */
+;(function () {
     const el = document.getElementById('typing-text');
     if (!el) return;
     const words = ['engineer', 'builder', 'competitor', 'maker'];
-    let wi = 0, ci = 0, deleting = false;
+    let wi = 0, ci = 0, del = false;
 
     function step() {
-        const word = words[wi];
-        if (!deleting) {
+        const w = words[wi];
+        if (!del) {
             ci++;
-            el.textContent = word.slice(0, ci);
-            if (ci === word.length) { setTimeout(() => { deleting = true; step(); }, 1800); return; }
+            el.textContent = w.slice(0, ci);
+            if (ci === w.length) { setTimeout(() => { del = true; step(); }, 1800); return; }
             setTimeout(step, 80 + Math.random() * 40);
         } else {
             ci--;
-            el.textContent = word.slice(0, ci);
-            if (ci === 0) { deleting = false; wi = (wi + 1) % words.length; setTimeout(step, 400); return; }
+            el.textContent = w.slice(0, ci);
+            if (ci === 0) { del = false; wi = (wi + 1) % words.length; setTimeout(step, 400); return; }
             setTimeout(step, 40 + Math.random() * 20);
         }
     }
-    setTimeout(step, 900);
+    setTimeout(step, 800);
 })();
 
 
-// ─── Theme Toggle ───────────────────────────────────
-;(function theme() {
+/* ── Theme Toggle ────────────────────────────────── */
+;(function () {
     const btn = document.getElementById('theme-toggle');
     const html = document.documentElement;
-    function set(t) { html.dataset.theme = t; localStorage.setItem('div-theme', t); }
+    const set = t => { html.dataset.theme = t; localStorage.setItem('div-theme', t); };
 
     const saved = localStorage.getItem('div-theme');
     if (saved) set(saved);
-    else if (window.matchMedia('(prefers-color-scheme:dark)').matches) set('dark');
+    else if (matchMedia('(prefers-color-scheme:dark)').matches) set('dark');
 
     btn.addEventListener('click', () => set(html.dataset.theme === 'light' ? 'dark' : 'light'));
 })();
 
 
-// ─── Nav: scroll-spy + scrolled state ───────────────
-;(function nav() {
-    const navEl  = document.getElementById('nav');
-    const links  = document.querySelectorAll('.nav-links a[href^="#"]');
-    const sects  = Array.from(document.querySelectorAll('section[id]'));
-
-    function onScroll() {
-        navEl.classList.toggle('scrolled', window.scrollY > 50);
-
-        const scrollY = window.scrollY + 120;
-        let activeId = sects[0]?.id;
-        for (const s of sects) {
-            if (scrollY >= s.offsetTop) activeId = s.id;
-        }
-        links.forEach(a => {
-            const target = a.getAttribute('href').replace('#', '');
-            a.classList.toggle('active', target === activeId);
+/* ── Nav → cell pulse ────────────────────────────── */
+;(function () {
+    document.querySelectorAll('.nav-links a[data-focus]').forEach(a => {
+        a.addEventListener('click', e => {
+            e.preventDefault();
+            const group = a.dataset.focus;
+            const cells = document.querySelectorAll(`.cell[data-group="${group}"]`);
+            cells.forEach(c => {
+                c.classList.remove('pulse');
+                void c.offsetWidth;          // reflow to restart animation
+                c.classList.add('pulse');
+                c.addEventListener('animationend', () => c.classList.remove('pulse'), { once: true });
+            });
         });
-    }
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
+    });
 })();
 
 
-// ─── Scroll Reveal (IntersectionObserver) ───────────
-;(function reveal() {
-    const items = document.querySelectorAll('.reveal');
-    if (!items.length) return;
-
-    const obs = new IntersectionObserver(entries => {
-        entries.forEach(e => {
-            if (e.isIntersecting) {
-                e.target.classList.add('revealed');
-                obs.unobserve(e.target);
-            }
-        });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-
-    items.forEach(el => obs.observe(el));
-})();
-
-
-// ─── Photo Slideshow ────────────────────────────────
-;(function slideshow() {
+/* ── Photo Slideshow ─────────────────────────────── */
+;(function () {
     const imgs = [
         'assets/d1.webp','assets/d2.webp','assets/d3.webp','assets/d4.webp',
         'assets/d5.webp','assets/d6.webp','assets/d7.webp','assets/d8.webp',
@@ -132,36 +96,35 @@
     const a = document.querySelector('.slide-a');
     const b = document.querySelector('.slide-b');
     if (!a || !b) return;
+    let idx = 0, aOn = true;
 
-    let idx = 0, aActive = true;
-
-    // preload first few
-    imgs.slice(0, 4).forEach(s => { const i = new Image(); i.src = s; });
+    imgs.slice(0, 3).forEach(s => { const i = new Image(); i.src = s; });
 
     setInterval(() => {
         idx = (idx + 1) % imgs.length;
-        if (aActive) {
+        if (aOn) {
             b.src = imgs[idx];
-            b.onload = () => { a.classList.remove('active'); b.classList.add('active'); aActive = false; };
+            b.onload = () => { a.classList.remove('active'); b.classList.add('active'); aOn = false; };
         } else {
             a.src = imgs[idx];
-            a.onload = () => { b.classList.remove('active'); a.classList.add('active'); aActive = true; };
+            a.onload = () => { b.classList.remove('active'); a.classList.add('active'); aOn = true; };
         }
     }, 3500);
 })();
 
 
-// ─── Card tilt on hover ─────────────────────────────
-;(function tilt() {
-    document.querySelectorAll('.project-card').forEach(card => {
-        card.addEventListener('mousemove', e => {
-            const r = card.getBoundingClientRect();
-            const x = (e.clientX - r.left) / r.width;
-            const y = (e.clientY - r.top) / r.height;
-            const tx = (y - .5) * -6;
-            const ty = (x - .5) * 6;
-            card.style.transform = `perspective(700px) rotateX(${tx}deg) rotateY(${ty}deg) translateY(-6px) scale(1.03)`;
+/* ── Timeline hover ──────────────────────────────── */
+;(function () {
+    const detail = document.getElementById('tl-detail');
+    if (!detail) return;
+
+    document.querySelectorAll('.tl-item').forEach(item => {
+        item.addEventListener('mouseenter', () => {
+            detail.textContent = item.dataset.tip;
+            detail.style.opacity = '1';
         });
-        card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+        item.addEventListener('mouseleave', () => {
+            detail.style.opacity = '0';
+        });
     });
 })();
