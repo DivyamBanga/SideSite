@@ -15,7 +15,13 @@
       "Bash(gh api:*)",
       "Bash(curl -sL \"https://raw.githubusercontent.com/DavidHDev/react-bits/main/src/content/Animations/SplashCursor/SplashCursor.jsx\" -o /tmp/SplashCursor.jsx)",
       "Read(//tmp/**)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "WebSearch",
+      "WebFetch(domain:developer.spotify.com)",
+      "WebFetch(domain:localhost)",
+      "WebFetch(domain:github-contributions-api.jogruber.de)",
+      "Bash(start index.html)",
+      "mcp__ide__getDiagnostics"
     ]
   }
 }

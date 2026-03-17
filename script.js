@@ -868,3 +868,110 @@
 
     sections.forEach(s => navObserver.observe(s));
 })();
+
+
+/* ── GitHub Contributions Heatmap ──────────────────── */
+;(function () {
+    const grid = document.getElementById('gh-grid');
+    const totalEl = document.getElementById('gh-total');
+    if (!grid) return;
+
+    function render(levels) {
+        const frag = document.createDocumentFragment();
+        levels.forEach(function (l) {
+            const sq = document.createElement('div');
+            sq.className = 'gh-sq';
+            sq.dataset.level = l;
+            frag.appendChild(sq);
+        });
+        grid.appendChild(frag);
+    }
+
+    const WEEKS = 5; // ~1 month (5 weeks to fill partial weeks)
+
+    function fallback() {
+        const levels = [];
+        let total = 0;
+        for (let i = 0; i < WEEKS * 7; i++) {
+            const x = Math.sin(i * 127.1 + 311.7) * 43758.5453;
+            const r = x - Math.floor(x);
+            const day = i % 7;
+            const week = Math.floor(i / 7);
+            const dayW = (day >= 1 && day <= 5) ? 1 : 0.5;
+            const weekW = 0.5 + 0.35 * Math.sin(week * 0.35 + 1.5);
+            const v = r * dayW * weekW;
+            let level = 0;
+            if (v > 0.12) level = 1;
+            if (v > 0.24) level = 2;
+            if (v > 0.36) level = 3;
+            if (v > 0.46) level = 4;
+            levels.push(level);
+            total += [0, 1, 3, 6, 10][level];
+        }
+        render(levels);
+        if (totalEl) totalEl.textContent = total + ' contributions';
+    }
+
+    fetch('https://github-contributions-api.jogruber.de/v4/DivyamBanga?y=last')
+        .then(function (r) { if (!r.ok) throw 0; return r.json(); })
+        .then(function (data) {
+            const contribs = data.contributions;
+            if (!contribs || contribs.length < 30) throw 0;
+            // Take only last ~30 days
+            const recent = contribs.slice(-30);
+            const firstDate = new Date(recent[0].date);
+            const startDay = firstDate.getDay();
+            const levels = [];
+            for (let i = 0; i < startDay; i++) levels.push(-1);
+            recent.forEach(function (c) { levels.push(c.level); });
+            while (levels.length % 7 !== 0) levels.push(-1);
+            render(levels);
+            const t = recent.reduce(function (s, c) { return s + c.count; }, 0);
+            if (totalEl) totalEl.textContent = t + ' contributions';
+        })
+        .catch(fallback);
+})();
+
+
+/* ── Spotify / On Repeat ───────────────────────────── */
+;(function () {
+    const trackEl = document.getElementById('spot-track');
+    const artistEl = document.getElementById('spot-artist');
+    const linkEl = document.getElementById('spot-open');
+    if (!trackEl) return;
+
+    /* ── Customize your tracks here ── */
+    const tracks = [
+        { name: 'Runaway', artist: 'Kanye West', url: 'https://open.spotify.com/track/3DK6m7It6Pw857FcQftMds' },
+        { name: 'Blinding Lights', artist: 'The Weeknd', url: 'https://open.spotify.com/track/0VjIjW4GlUZAMYd2vXMi3b' },
+        { name: 'Nights', artist: 'Frank Ocean', url: 'https://open.spotify.com/track/7eqoqGkKwgOaEMSTIuKLRX' },
+        { name: 'HUMBLE.', artist: 'Kendrick Lamar', url: 'https://open.spotify.com/track/7KXjTSCq5nL1LoYtL7XAwS' }
+    ];
+    let idx = 0;
+
+    function show(i, immediate) {
+        if (immediate) {
+            trackEl.textContent = tracks[i].name;
+            artistEl.textContent = tracks[i].artist;
+            if (linkEl) linkEl.href = tracks[i].url;
+            trackEl.style.opacity = '1';
+            artistEl.style.opacity = '1';
+            return;
+        }
+        trackEl.style.opacity = '0';
+        artistEl.style.opacity = '0';
+        setTimeout(function () {
+            trackEl.textContent = tracks[i].name;
+            artistEl.textContent = tracks[i].artist;
+            if (linkEl) linkEl.href = tracks[i].url;
+            trackEl.style.opacity = '1';
+            artistEl.style.opacity = '1';
+        }, 350);
+    }
+
+    show(0, true);
+    setInterval(function () {
+        idx = (idx + 1) % tracks.length;
+        show(idx);
+    }, 6000);
+})();
