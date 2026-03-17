@@ -11,7 +11,11 @@
       "WebFetch(domain:raw.githubusercontent.com)",
       "WebFetch(domain:api.github.com)",
       "WebFetch(domain:codepen.io)",
-      "WebFetch(domain:paveldogreat.github.io)"
+      "WebFetch(domain:paveldogreat.github.io)",
+      "Bash(gh api:*)",
+      "Bash(curl -sL \"https://raw.githubusercontent.com/DavidHDev/react-bits/main/src/content/Animations/SplashCursor/SplashCursor.jsx\" -o /tmp/SplashCursor.jsx)",
+      "Read(//tmp/**)",
+      "Bash(curl:*)"
     ]
   }
 }
