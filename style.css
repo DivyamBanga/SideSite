@@ -64,7 +64,7 @@ body::after{
 .intro.exit .intro-name{opacity:0;transform:translateY(-16px) scale(1.06);transition:all .15s ease}
 
 /* ══ Cursor FX ══ */
-#trail{position:fixed;inset:0;z-index:100;pointer-events:none}
+#trail{position:fixed;inset:0;width:100%;height:100%;z-index:100;pointer-events:none}
 #glow{
     position:fixed;width:550px;height:550px;border-radius:50%;pointer-events:none;z-index:0;
     background:radial-gradient(circle,var(--glow) 0%,transparent 65%);

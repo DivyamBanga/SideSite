@@ -2,7 +2,16 @@
   "permissions": {
     "allow": [
       "WebFetch(domain:www.lance.build)",
-      "WebFetch(domain:www.zacharyyu.com)"
+      "WebFetch(domain:www.zacharyyu.com)",
+      "WebFetch(domain:lance.build)",
+      "WebFetch(domain:www.google.com)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:reactbits.dev)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:codepen.io)",
+      "WebFetch(domain:paveldogreat.github.io)"
     ]
   }
 }
