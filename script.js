@@ -973,5 +973,5 @@
     setInterval(function () {
         idx = (idx + 1) % tracks.length;
         show(idx);
-    }, 6000);
+    }, 8000);
 })();
