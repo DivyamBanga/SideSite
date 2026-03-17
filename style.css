@@ -20,7 +20,7 @@ img{display:block;max-width:100%}
     --hi:rgba(0,0,0,.06);--badge-bg:rgba(0,0,0,.04);--badge-fg:#3A3A3A;
     --bdr:#E8E5E1;--glow:rgba(0,0,0,.025);
     --trail-r:90;--trail-g:85;--trail-b:80;
-    --pop:0 20px 55px rgba(0,0,0,.08);
+    --pop:0 6px 20px rgba(0,0,0,.04);
     --sw-bg:#D5D3CF;--sw-active:#1A1A1A;
     --nav-bg:rgba(244,243,240,.9);
     color-scheme:light;
@@ -33,7 +33,7 @@ img{display:block;max-width:100%}
     --hi:rgba(255,255,255,.08);--badge-bg:rgba(255,255,255,.06);--badge-fg:#BBB;
     --bdr:#2A2A2A;--glow:rgba(255,255,255,.03);
     --trail-r:180;--trail-g:180;--trail-b:180;
-    --pop:0 20px 55px rgba(0,0,0,.4);
+    --pop:0 6px 20px rgba(0,0,0,.15);
     --sw-bg:#333;--sw-active:#E8E8E8;
     --nav-bg:rgba(10,10,10,.88);
     color-scheme:dark;
@@ -101,7 +101,7 @@ body.glow-on #glow{opacity:1}
         "hero   hero    lucid   myfarm   cortex"
         "about  social  chess   dark     scout"
         "about  tl      tl      tl       contact";
-    transition:grid-template-columns .2s cubic-bezier(.4,0,.2,1),grid-template-rows .2s cubic-bezier(.4,0,.2,1);
+    transition:grid-template-columns .35s cubic-bezier(.4,0,.2,1),grid-template-rows .35s cubic-bezier(.4,0,.2,1);
 }
 .cell-hero{grid-area:hero}.proj-label{grid-area:plbl}
 .cell-lucid{grid-area:lucid}.cell-myfarm{grid-area:myfarm}.cell-cortex{grid-area:cortex}
@@ -114,8 +114,8 @@ body.glow-on #glow{opacity:1}
     background:var(--card);border:1px solid var(--bdr);border-radius:10px;
     padding:.65rem;position:relative;overflow:hidden;
     display:flex;flex-direction:column;
-    transition:opacity .15s ease,box-shadow .2s ease,
-               border-color .2s ease,background .2s ease;
+    transition:opacity .3s ease,box-shadow .3s ease,
+               border-color .3s ease,background .3s ease;
     will-change:opacity;contain:layout style;
     /* entrance — hidden until intro finishes */
     opacity:0;transform:translateY(14px) scale(.96);
@@ -130,12 +130,12 @@ body.ready .cell{animation:cellIn .45s ease forwards;animation-delay:calc(var(--
 @media(min-width:769px){
 
     /* Dim non-hovered cells */
-    .bento.hoverable:has(.cell:hover) .cell{opacity:.38}
+    .bento.hoverable:has(.cell:hover) .cell{opacity:.55}
     .bento.hoverable:has(.cell:hover) .cell:hover{
         opacity:1!important;z-index:10;
-        box-shadow:var(--pop);border-color:var(--accent);background:var(--card-h);
+        box-shadow:var(--pop);background:var(--card-h);
     }
-    .bento.hoverable:has(.cell:hover) .proj-label{opacity:.4}
+    .bento.hoverable:has(.cell:hover) .proj-label{opacity:.6}
 
     /* ── Grid resize per cell ── */
     .bento:has(.cell-hero:hover){
@@ -199,7 +199,7 @@ body.ready .proj-label{animation:cellIn .4s ease forwards;animation-delay:calc(v
 
 /* ── Featured highlight ── */
 .feat::before{
-    content:'';position:absolute;top:0;left:0;right:0;height:2px;z-index:2;
+    content:'';position:absolute;top:0;left:0;right:0;height:1px;z-index:2;
     background:var(--accent);border-radius:10px 10px 0 0;
 }
 
@@ -234,7 +234,7 @@ body.ready .proj-label{animation:cellIn .4s ease forwards;animation-delay:calc(v
     gap:.35rem;padding:0 9px;
     border:1px solid var(--bdr);color:var(--tx2);transition:all .15s;background:var(--bg);
 }
-.hl:hover{color:var(--accent);border-color:var(--accent);transform:translateY(-2px)}
+.hl:hover{color:var(--accent);border-color:var(--accent);transform:translateY(-1px)}
 .hl-label{
     font-family:'Outfit',sans-serif;font-size:.55rem;font-weight:500;
     max-width:0;overflow:hidden;white-space:nowrap;
@@ -266,8 +266,8 @@ body.ready .proj-label{animation:cellIn .4s ease forwards;animation-delay:calc(v
 }
 .badge::after{
     content:'';position:absolute;top:0;left:-100%;width:60%;height:100%;
-    background:linear-gradient(90deg,transparent,rgba(255,255,255,.22),transparent);
-    animation:shimmer 4s infinite 1s;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,.12),transparent);
+    animation:shimmer 7s infinite 1s;
 }
 @keyframes shimmer{0%{left:-100%}100%{left:200%}}
 
@@ -311,11 +311,11 @@ body.ready .proj-label{animation:cellIn .4s ease forwards;animation-delay:calc(v
 .gh-sq[data-level="3"]{background:rgba(var(--trail-r),var(--trail-g),var(--trail-b),.4)}
 .gh-sq[data-level="4"]{background:rgba(var(--trail-r),var(--trail-g),var(--trail-b),.65)}
 .gh-sq[data-level="-1"]{visibility:hidden}
-/* Gentle lift on hover — stays monochrome */
-.cell-github:hover .gh-sq[data-level="1"]{background:rgba(var(--trail-r),var(--trail-g),var(--trail-b),.16)}
-.cell-github:hover .gh-sq[data-level="2"]{background:rgba(var(--trail-r),var(--trail-g),var(--trail-b),.3)}
-.cell-github:hover .gh-sq[data-level="3"]{background:rgba(var(--trail-r),var(--trail-g),var(--trail-b),.5)}
-.cell-github:hover .gh-sq[data-level="4"]{background:rgba(var(--trail-r),var(--trail-g),var(--trail-b),.78)}
+/* Hover — muted GitHub green */
+.cell-github:hover .gh-sq[data-level="1"]{background:rgba(110,140,110,.14)}
+.cell-github:hover .gh-sq[data-level="2"]{background:rgba(100,145,100,.26)}
+.cell-github:hover .gh-sq[data-level="3"]{background:rgba(90,140,90,.42)}
+.cell-github:hover .gh-sq[data-level="4"]{background:rgba(80,135,80,.62)}
 .gh-foot{display:flex;align-items:center;gap:.25rem}
 .gh-total{font-family:'JetBrains Mono',monospace;font-size:.48rem;font-weight:500;color:var(--tx3)}
 .gh-sub{font-family:'JetBrains Mono',monospace;font-size:.42rem;color:var(--tx3);opacity:.7}
