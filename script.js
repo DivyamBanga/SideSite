@@ -53,13 +53,13 @@
     const config = {
         SIM_RESOLUTION: 128,
         DYE_RESOLUTION: 1440,
-        DENSITY_DISSIPATION: 3.5,
-        VELOCITY_DISSIPATION: 2,
+        DENSITY_DISSIPATION: 4.5,
+        VELOCITY_DISSIPATION: 3,
         PRESSURE: 0.1,
         PRESSURE_ITERATIONS: 20,
         CURL: 3,
-        SPLAT_RADIUS: 0.2,
-        SPLAT_FORCE: 6000,
+        SPLAT_RADIUS: 0.12,
+        SPLAT_FORCE: 4000,
         SHADING: true,
         COLOR_UPDATE_SPEED: 10
     };
@@ -734,9 +734,9 @@
     });
 
     ;(function tick() {
-        gx += (tx - gx) * 0.04;
-        gy += (ty - gy) * 0.04;
-        glow.style.transform = `translate(${gx - 275}px,${gy - 275}px)`;
+        gx += (tx - gx) * 0.3;
+        gy += (ty - gy) * 0.3;
+        glow.style.transform = `translate(${gx - 200}px,${gy - 200}px)`;
         requestAnimationFrame(tick);
     })();
 })();
